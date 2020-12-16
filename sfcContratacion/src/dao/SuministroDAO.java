@@ -571,7 +571,7 @@ public class SuministroDAO {
 			}
 			
 		}catch(Exception ex){
-			System.out.println("getRolDestino()");
+			System.out.println("getDataCliente()");
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		}finally{

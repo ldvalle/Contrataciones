@@ -122,7 +122,7 @@ public class ProcesaSolSRV {
 		//sRolOrigen = "E17317";
 		sRolOrigen = "SALESFORCE";
 		sRolDestino =miDAO.getRolDestino("INC", regSF.Sucursal);
-		
+		sRolDestino = "EVDI";
 		
 		//Registrar Solicitud
 		if(! miDAO.regSolSumin(regSF, lNroMensaje, sRolOrigen, sRolDestino)) {
@@ -158,8 +158,7 @@ public class ProcesaSolSRV {
 		sRolOrigen = "E17317";
 		sAreaOrigen = "SICO";
 		sRolDestino =miDAO.getRolDestino("MANSER", regSF.Sucursal);
-		
-		
+
 		//Registrar Manser
 		if(! miDAO.regManRet(regSF, lNroMensaje, sRolOrigen, sAreaOrigen, sRolDestino, "MANSER")) {
 			return false;

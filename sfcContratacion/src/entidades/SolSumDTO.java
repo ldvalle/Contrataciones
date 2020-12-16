@@ -61,11 +61,10 @@ public class SolSumDTO {
 		this.lNroSolicitud = NroSol;
 		this.sDv = CalculaDV(NroSol);
 		this.sTipoVenc = "1";
-		this.sCodPropiedad = "1";
 		this.sEstado = "ET";
 		this.sCentroTrans = "*****";
 
-
+		this.sCodPropiedad = regInt.CodPropiedad;
 		this.sCiiu = regInt.Ciiu;
 		this.sNombre = regInt.Nombre;
 		this.sTipoDoc = regInt.TipoDoc;

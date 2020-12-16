@@ -43,8 +43,8 @@ public class dataIncorpoDTO {
     public int Sucursal;
     public String ZonaTecnica;
     public String TipoTarifa; //T1 T2 T3
-    public String ValorTension; //No saben que es
-    public String voltaje_solicitado; // Levantarlo de tipoTension
+    public String ValorTension; //
+    public String voltaje_solicitado; // Levantarlo de Valor Tension
     public String nivelTension; //Alta Media o Baja
     public String ClaseServicio;  //Es el Tipo de Cliente
     public String Tarifa;
@@ -74,11 +74,13 @@ public class dataIncorpoDTO {
     public String nro_cuit;
     public String CentroOperativo;
 
+    public String TipoReparto;	//No está en el json
+
     /* Version 2017 sin pareja */
 
 	public String nomLocalidad;
 	public String TipoVenc;	//No está en el json
-	public String TipoReparto;	//No está en el json
+
 	public String Estado;
 	public String CentroTrans;	//No está en el json
 	//public String Procedimiento;
@@ -155,7 +157,7 @@ public class dataIncorpoDTO {
           
           this.TipoSum = (String) obj1.get("tipoSuministro");
           this.Ciiu = (String) obj1.get("codigoCIIU");
-          this.voltaje_solicitado = (String) obj1.get("tipoTension");
+          this.voltaje_solicitado = (String) obj1.get("valorTension");
           this.telefono = (String) obj1.get("telefonoPrincipal");
           this.telefono2 = (String) obj1.get("telefonoAlternativo");
           this.CentroOperativo = (String) obj1.get("centroOperativo");
