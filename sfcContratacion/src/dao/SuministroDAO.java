@@ -9,11 +9,7 @@ import entidades.MensajeDTO;
 */
 import entidades.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import java.util.Collection;
 import java.util.Vector;
@@ -238,7 +234,17 @@ public class SuministroDAO {
 				pstm.executeUpdate();
 				pstm=null;
 			}
-			
+
+			if(!regInter.eMail.trim().isEmpty()) {
+				//Graba el Email
+				pstm = con.prepareStatement(INS_SOL_CLI_MAIL);
+				pstm.setLong(1, lNroSolicitud);
+				pstm.setString(2, regInter.eMail.trim());
+
+				pstm.executeUpdate();
+				pstm=null;
+			}
+
 			//Enviar Mensaje
 			sql = query6(regMen);
 			pstm = con.prepareStatement(sql);
@@ -625,7 +631,77 @@ public class SuministroDAO {
 		
 	}
 	
-	
+	public boolean updateSol(SolSumDTO regS){
+		Connection con = null;
+		PreparedStatement pstm = null;
+
+		try{
+			con = UConnection.getConnection();
+			pstm = con.prepareStatement(UPD_SOLICITUD);
+
+			pstm.setString(1,regS.sNombre.trim());
+			pstm.setString(2, regS.sTipoDoc.trim());
+
+			if(regS.lNroDoc == null){
+				pstm.setNull(3, Types.INTEGER);
+			}else{
+				pstm.setLong(3, regS.lNroDoc);
+			}
+
+			pstm.setString(4, regS.sProvincia.trim());
+			pstm.setString(5, regS.sPartido.trim());
+			pstm.setString(6, regS.sLocalidad.trim());
+			pstm.setString(7, regS.sCodCalle.trim());
+			pstm.setString(8, regS.sNomCalle.trim());
+			pstm.setString(9, regS.sNroDir.trim());
+			pstm.setString(10, regS.sPiso.trim());
+			pstm.setString(11, regS.sDepto.trim());
+
+			if(regS.codPost == null){
+				pstm.setNull(12, Types.INTEGER);
+			}else{
+				pstm.setLong(12, regS.codPost);
+			}
+			pstm.setString(13, regS.sTipoIva.trim());
+			pstm.setString(14, regS.sCodPropiedad.trim());
+			pstm.setString(15, regS.sCiiu.trim());
+			pstm.setString(16, regS.sSucursal.trim());
+			pstm.setString(17, regS.nro_cuit.trim());
+			pstm.setString(18, regS.voltaje_solicitado.trim());
+			pstm.setString(19, regS.telefono.trim());
+			pstm.setString(20, regS.sTipoCliente.trim());
+			pstm.setString(21, regS.sCodEntreCalle1.trim());
+			pstm.setString(22, regS.sNomEntreCalle1.trim());
+			pstm.setString(23, regS.sCodEntreCalle2.trim());
+			pstm.setString(24, regS.sNomEntreCalle2.trim());
+
+			if(regS.potenciaContratada == null){
+				pstm.setNull(25, Types.INTEGER);
+			}else{
+				pstm.setLong(25, regS.potenciaContratada);
+			}
+
+			pstm.setString(26, regS.sRstObraCliente.trim());
+			pstm.setLong(27, regS.lNroSolicitud);
+
+			pstm.executeUpdate();
+
+		}catch(Exception ex){
+			System.out.println("updateSol()");
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		}finally{
+			try{
+				if(pstm != null) pstm.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+				throw new RuntimeException(ex);
+			}
+		}
+
+
+		return true;
+	}
 
 	
 	private String query1(String sProcedimiento) {
@@ -717,8 +793,9 @@ public class SuministroDAO {
 		sql += "cod_entre, ";					//49
 		sql += "nom_entre, ";					//50
 		sql += "cod_entre1, ";					//51
-		sql += "nom_entre1 ";					//52
-
+		sql += "nom_entre1, ";					//52
+		sql += "pot_cont_hp, ";					//53
+		sql += "rst_obra_cliente ";				//54
 		sql += ")VALUES( ";
 		sql += reg.lNroSolicitud + ", ";			//1
 		sql += "'" + reg.sDv + "', ";				//2
@@ -930,9 +1007,21 @@ public class SuministroDAO {
 		}
 
 		if(reg.sNomEntreCalle2 == null || reg.sNomEntreCalle2.isEmpty()){		//52
-			sql += "NULL) ";
+			sql += "NULL, ";
 		}else{
-			sql += "'" + reg.sNomEntreCalle2.trim() + "') ";
+			sql += "'" + reg.sNomEntreCalle2.trim() + "', ";
+		}
+
+		if(reg.potenciaContratada== null ){										//53
+			sql += "NULL, ";
+		}else{
+			sql +=  reg.potenciaContratada + "', ";
+		}
+
+		if(reg.sRstObraCliente.trim() == null || reg.sRstObraCliente.isEmpty()){		//54
+			sql += "NULL ) ";
+		}else{
+			sql += "'" + reg.sRstObraCliente.trim() + "') ";
 		}
 
 		return sql;
@@ -1153,4 +1242,41 @@ public class SuministroDAO {
 			"WHERE cod_centro_op = ? " +
 			"AND fecha_activacion <= TODAY " +
 			"AND (fecha_desactivac IS NULL OR fecha_desactivac > TODAY) ";
+
+	private static final String INS_SOL_CLI_MAIL = "INSERT INTO solicitud_cliente_mail " +
+			"(solicitud, " +
+			"email, " +
+			"ppal_mail, " +
+			"rol_ingreso, " +
+			"fecha_ingreso) " +
+			"VALUES ( ?, ?, 'S', 'SALESFORCE', TODAY) ";
+
+	private static final String UPD_SOLICITUD = "UPDATE solicitud SET " +
+			"nombre = ?, " +		// 1
+			"tip_doc = ?, " +		// 2
+			"nro_doc = ?, " +		// 3
+			"provincia = ?, " +		// 4
+			"partido = ?, " +		// 5
+			"localidad = ?, " +		// 6
+			"cod_calle = ?, " +		// 7
+			"nom_calle = ?, " +		// 8
+			"nro_dir = ?, " +		// 9
+			"piso_dir = ?, " +		// 10
+			"depto_dir = ?, " +		// 11
+			"cod_postal = ?, " +	// 12
+			"tipo_iva = ?, " +		// 13
+			"cod_propiedad = ?, " +		// 14
+			"ciiu = ?, " +			// 15
+			"sucursal = ?, " +		// 16
+			"nro_cuit = ?, " +		// 17
+			"voltaje_solicitado = ?, " +		// 18
+			"telefono = ?, " +		// 19
+			"tipo_cliente = ?, " +		// 20
+			"cod_entre = ?, " +		// 21
+			"nom_entre = ?, " +		// 22
+			"cod_entre1 = ?, " +		// 23
+			"nom_entre1 = ?, " +		// 24
+			"pot_cont_hp = ?, " +		// 25
+			"rst_obra_cliente = ?, " +		// 26
+			"WHERE nro_solicitud = ? ";		// 27
 }

@@ -5,7 +5,7 @@ public class SolSumDTO {
 	public String	sDv;
 	public String	sNombre;
 	public String	sTipoDoc;
-	public long		lNroDoc;
+	public Long		lNroDoc;
 	public String	sProvincia;
 	public String	sPartido;
 	public String	sLocalidad;
@@ -14,7 +14,7 @@ public class SolSumDTO {
 	public String	sNroDir;
 	public String	sPiso;
 	public String	sDepto;
-	public long	codPost;
+	public Long	codPost;
 	//public long	lMensaje;
 	public String	sTipoIva;
 	public String	sTipoVenc;
@@ -56,6 +56,9 @@ public class SolSumDTO {
 	public String	dp_nom_calle;
 	public String	dp_nro_dir;
 	public String	dp_cod_postal;
+
+	public Long		potenciaContratada;
+	public String	sRstObraCliente;
 	
 	public SolSumDTO(long NroSol, long NroMsg, dataIncorpoDTO regInt) {
 		this.lNroSolicitud = NroSol;
@@ -63,6 +66,7 @@ public class SolSumDTO {
 		this.sTipoVenc = "1";
 		this.sEstado = "ET";
 		this.sCentroTrans = "*****";
+		this.sRstObraCliente = "N";
 
 		this.sCodPropiedad = regInt.CodPropiedad;
 		this.sCiiu = regInt.Ciiu;
@@ -129,6 +133,8 @@ public class SolSumDTO {
 		this.sNomEntreCalle1 = regInt.nomEntreCalle1.trim();
 		this.sCodEntreCalle2 = regInt.codEntreCalle2.trim();
 		this.sNomEntreCalle2 = regInt.nomEntreCalle2.trim();
+
+		this.potenciaContratada = regInt.PotenciaContratada;
 
 		/*
 		this.dp_cod_postal = regInt.codPostPostal.trim();
